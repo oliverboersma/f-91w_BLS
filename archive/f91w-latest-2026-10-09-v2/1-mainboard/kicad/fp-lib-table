@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "f91w")(type "KiCad")(uri "${KIPRJMOD}/lib/f91w.pretty")(options "")(descr "F-91W project footprints"))
+)

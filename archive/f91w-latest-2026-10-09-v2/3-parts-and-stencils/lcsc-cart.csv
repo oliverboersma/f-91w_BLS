@@ -1,0 +1,19 @@
+LCSC Part #,Manufacturer Part Number,Quantity,Customer Reference,Note
+C189624,LIS2DW12TR,2,MAIN U2,DigiKey is out of stock
+C20013105,ELT-3KN137C,2,MAIN L3,4 mH sub for obsolete ELT-3KN004B (14 mH); see README
+C5136771,NX2012SA-32.768KHZ-EXS00A-MU00646,3,MAIN Y2,exact part from the design
+,TFM201608ALC-2R2MTAA,3,FLEX L1,0.80 mm tall; let the LCSC BOM tool match the MPN
+,2450AT18B100E,3,MAIN AE1,DigiKey backorder
+,CL03A104KQ3NNNC,20,MAIN C4 C5 C6 C9 C14 C17 C23,100n 0201 6.3V X5R; DigiKey backorder
+,CL03A105MQ3CSNC,10,MAIN C7 C22,1u 0201 6.3V X5R; DigiKey backorder
+,CL10A226MQ8NRNC,15,MAIN C15 C16 + FLEX C1 C3 C4,22u 0603 6.3V X5R; DigiKey backorder to Feb 2027
+,CL05A475MP5NRNC,10,MAIN C1 C11 C13,4.7u 0402 10V X5R; not at DigiKey
+,CL05B104KO5NNNC,10,FLEX C6,100n 0402 16V X7R; DigiKey backorder
+,CL05A105KP5NNNC,10,FLEX C7 C8,1u 0402 10V X5R; not at DigiKey
+,LQG15HS10NJ02D,50,MAIN L2,moved from DigiKey in the live cart
+C155524,DMN313DLT-7,10,MAIN Q1,moved from DigiKey in the live cart
+,RC0201FR-0710KL,100,MAIN R2 R4 R8 R9,moved from DigiKey in the live cart
+,RC0201JR-070RL,100,MAIN R3,moved from DigiKey in the live cart
+,RC0201FR-07100RL,100,MAIN R5 R7,moved from DigiKey in the live cart
+,RC0201FR-071KL,100,MAIN R6,moved from DigiKey in the live cart
+,TPS610995DRVR,3,FLEX U1,moved from DigiKey in the live cart

@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "f91w")(type "KiCad")(uri "${KIPRJMOD}/lib/f91w.kicad_sym")(options "")(descr "F-91W project symbols"))
+)

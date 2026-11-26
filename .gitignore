@@ -1,0 +1,7 @@
+firmware/build*/
+firmware/tests/test_steps
+firmware/tests/test_display
+firmware/tests/test_time
+firmware/hr/test_hr
+third_party/
+__pycache__/

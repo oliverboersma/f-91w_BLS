@@ -1,0 +1,12 @@
+References,Qty,Value,Footprint,MPN,Manufacturer,DNP
+C1 C3 C4,3,22u,Capacitor_SMD:C_0603_1608Metric,,,
+C2 C5,2,10u,Capacitor_SMD:C_0402_1005Metric,,,
+C6,1,100n,Capacitor_SMD:C_0402_1005Metric,,,
+C7 C8,2,1u,Capacitor_SMD:C_0402_1005Metric,,,
+L1,1,2.2u,Inductor_SMD:L_Murata_DFE201610P,DFE201610E-2R2M=P2,Murata,
+R1,1,47R,Resistor_SMD:R_0402_1005Metric,,,
+R2,1,1M,Resistor_SMD:R_0402_1005Metric,,,
+R3,1,100k,Resistor_SMD:R_0402_1005Metric,,,
+R4,1,0R,Resistor_SMD:R_0402_1005Metric,,,
+U1,1,TPS610995DRV,Package_SON:WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm,TPS610995DRVR,Texas Instruments,
+U2,1,MAXM86161EFD+,f91w:MAXM86161_OLGA-14,MAXM86161EFD+,Analog Devices,
