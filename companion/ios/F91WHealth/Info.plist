@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>F-91W</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Connects to your F-91W watch to read steps and heart rate.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Saves steps and heart rate from your F-91W watch to Apple Health.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+	</array>
+</dict>
+</plist>

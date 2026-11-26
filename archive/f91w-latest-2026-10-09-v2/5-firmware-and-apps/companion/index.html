@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-91W Companion</title>
+<style>
+  :root { --bg:#f6f6f3; --fg:#1d1d1b; --muted:#6b6b66; --card:#fff; --line:#deded8; --accent:#2f6b4f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151614; --fg:#ecece6; --muted:#9a9a92; --card:#1f201d; --line:#33342f; --accent:#7cc39c; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.45 system-ui, sans-serif; }
+  main { max-width:560px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.3rem; margin:.2rem 0 1rem; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:12px; }
+  h2 { font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 .5rem; }
+  .big { font:600 2rem/1.1 ui-monospace, monospace; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  button { font:inherit; padding:.5rem .9rem; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--fg); cursor:pointer; }
+  button.primary { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+  button:disabled { opacity:.45; cursor:default; }
+  label { display:flex; gap:6px; align-items:center; margin-right:12px; }
+  select, input[type=number] { font:inherit; padding:.25rem; background:var(--bg); color:var(--fg); border:1px solid var(--line); border-radius:6px; }
+  .bars { display:flex; gap:6px; align-items:flex-end; height:90px; }
+  .bars div { flex:1; background:var(--accent); border-radius:3px 3px 0 0; min-height:2px; position:relative; }
+  .bars span { position:absolute; bottom:-1.3rem; left:0; right:0; text-align:center; font-size:.7rem; color:var(--muted); }
+  #log { color:var(--muted); font-size:.85rem; min-height:1.2em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>F-91W companion</h1>
+  <section>
+    <div class="row">
+      <button id="connect" class="primary">Connect</button>
+      <button id="sync" disabled>Set clock</button>
+      <button id="find" disabled>Find watch</button>
+      <span id="batt"></span>
+    </div>
+    <p id="log">Hold LIGHT on the watch for 1.5 s, then Connect. Pairing asks for the passkey shown on the watch.</p>
+  </section>
+  <section>
+    <h2>Steps today</h2>
+    <div class="big" id="steps">–</div>
+    <div class="bars" id="hist" aria-label="Steps, last 7 days"></div>
+    <div style="height:1.2rem"></div>
+  </section>
+  <section>
+    <h2>Heart rate</h2>
+    <div class="row"><div class="big" id="hr">–</div><button id="measure" disabled>Measure</button></div>
+    <div id="hrnote" style="color:var(--muted)"></div>
+  </section>
+  <section>
+    <h2>Settings</h2>
+    <div class="row">
+      <label><input type="checkbox" id="s24"> 24 h</label>
+      <label><input type="checkbox" id="schime"> Hourly chime</label>
+      <label><input type="checkbox" id="sbeep"> Button beep</label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label>Contrast <input type="number" id="scontrast" min="0" max="7" style="width:3.5em"></label>
+      <label>Light <select id="slight"></select></label>
+      <label>PPG LED mA <input type="number" id="sled" min="1" max="31" style="width:4em"></label>
+      <button id="save" disabled>Save</button>
+    </div>
+  </section>
+</main>
+<script>
+const uuid = n => `6f91${n.toString(16).padStart(4, '0')}-c2a6-4b3e-8f1d-0a5e3b7c9d10`;
+const U = { svc: uuid(1), time: uuid(2), steps: uuid(3), hist: uuid(4), hr: uuid(5), ctrl: uuid(6), settings: uuid(8) };
+const HR_STATUS = { 1: 'too short', 2: 'no skin contact', 3: 'you moved', 4: 'no pulse found', 5: 'low confidence', 255: 'no PPG sensor' };
+const COLORS = ['off', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'];
+const $ = id => document.getElementById(id);
+COLORS.forEach((c, i) => $('slight').add(new Option(c, i)));
+let ch = {}, device;
+
+const log = t => { $('log').textContent = t; };
+const enable = on => ['sync', 'find', 'measure', 'save'].forEach(id => $(id).disabled = !on);
+
+function showSteps(dv) { $('steps').textContent = dv.getUint32(0, true).toLocaleString(); }
+function showHist(dv) {
+  const days = [...Array(7)].map((_, i) => dv.getUint32(4 * i, true)).reverse();   // oldest first
+  const max = Math.max(1, ...days);
+  $('hist').innerHTML = days.map((v, i) =>
+    `<div style="height:${Math.round(85 * v / max) + 2}%" title="${v} steps"><span>${i === 6 ? 'yday' : `-${7 - i}d`}</span></div>`).join('');
+}
+function showHr(dv) {
+  const st = dv.getUint8(0), bpm = dv.getUint8(1), conf = dv.getUint8(2), ts = dv.getUint32(4, true);
+  const when = ts ? new Date(ts * 1000).toLocaleString() : '';
+  $('hr').textContent = st === 0 && bpm ? `${bpm} bpm` : '–';
+  $('hrnote').textContent = st === 0 ? (bpm ? `confidence ${conf} %, ${when}` : '') : `${HR_STATUS[st] || 'error'} ${when}`;
+}
+function showSettings(dv) {
+  const f = dv.getUint8(0);
+  $('s24').checked = f & 1; $('schime').checked = f & 2; $('sbeep').checked = f & 4;
+  $('scontrast').value = dv.getUint8(1); $('slight').value = dv.getUint8(2); $('sled').value = dv.getUint8(3);
+}
+
+async function setClock() {
+  const b = new DataView(new ArrayBuffer(6));
+  b.setUint32(0, Math.floor(Date.now() / 1000), true);
+  b.setInt16(4, -new Date().getTimezoneOffset(), true);
+  await ch.time.writeValueWithResponse(b);
+}
+
+$('connect').onclick = async () => {
+  try {
+    device = await navigator.bluetooth.requestDevice({
+      filters: [{ namePrefix: 'F-91W' }], optionalServices: [U.svc, 'battery_service', 'heart_rate'] });
+    device.addEventListener('gattserverdisconnected', () => { enable(false); log('Disconnected.'); });
+    log('Connecting…');
+    const server = await device.gatt.connect();
+    const svc = await server.getPrimaryService(U.svc);
+    for (const k of ['time', 'steps', 'hist', 'hr', 'ctrl', 'settings']) ch[k] = await svc.getCharacteristic(U[k]);
+    log('Pairing (enter the passkey shown on the watch if asked)…');
+    showSteps(await ch.steps.readValue());          // first encrypted read triggers pairing
+    showHist(await ch.hist.readValue());
+    showHr(await ch.hr.readValue());
+    showSettings(await ch.settings.readValue());
+    await setClock();
+    ch.steps.addEventListener('characteristicvaluechanged', e => showSteps(e.target.value));
+    ch.hr.addEventListener('characteristicvaluechanged', e => { showHr(e.target.value); $('measure').disabled = false; });
+    await ch.steps.startNotifications();
+    await ch.hr.startNotifications();
+    try {
+      const bs = await server.getPrimaryService('battery_service');
+      const lvl = await (await bs.getCharacteristic('battery_level')).readValue();
+      $('batt').textContent = `Battery ${lvl.getUint8(0)} %`;
+    } catch (e) { /* battery is optional */ }
+    enable(true);
+    log(`Connected to ${device.name}. Clock set.`);
+  } catch (e) { log(e.message); }
+};
+$('sync').onclick = async () => { await setClock(); log('Clock set.'); };
+$('find').onclick = () => ch.ctrl.writeValueWithResponse(new Uint8Array([2]));
+$('measure').onclick = async () => {
+  $('measure').disabled = true; $('hr').textContent = '…'; $('hrnote').textContent = 'Keep still for about 12 s.';
+  await ch.ctrl.writeValueWithResponse(new Uint8Array([1]));
+};
+$('save').onclick = async () => {
+  const f = ($('s24').checked ? 1 : 0) | ($('schime').checked ? 2 : 0) | ($('sbeep').checked ? 4 : 0);
+  await ch.settings.writeValueWithResponse(new Uint8Array([f, +$('scontrast').value & 7, +$('slight').value, +$('sled').value]));
+  log('Settings saved.');
+};
+if (!navigator.bluetooth) log('This browser has no Web Bluetooth. Use Chrome or Edge on desktop or Android, or companion/f91w.py.');
+</script>
+</body>
+</html>

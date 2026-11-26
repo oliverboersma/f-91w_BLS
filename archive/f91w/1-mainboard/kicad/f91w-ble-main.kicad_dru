@@ -1,0 +1,14 @@
+(version 1)
+# KiCad 7.0 has no memberOfFootprint() (it arrived in 8.0) and treats it as false, so the
+# earlier "except M1/D1" edge rule never matched. These rules use pad numbers, which are
+# unique to the M1 outline footprint on this board.
+(rule "F-91W button contacts are plated half-holes on the board edge (Sensor Watch outline)"
+  (condition "A.Type == 'Pad' && (A.Pad_Number == 'LIGHT' || A.Pad_Number == 'MODE' || A.Pad_Number == 'ALARM')")
+  (constraint edge_clearance (min 0mm))
+  (severity ignore))
+(rule "LCD zebra band: no vias under the strip"
+  (condition "A.Type == 'Via' && A.insideArea('LCD zebra band')")
+  (constraint disallow via))
+(rule "F-91W spring and battery contacts: keep other-net pours 0.3 mm away"
+  (condition "A.Type == 'Pad' && (A.Pad_Number == 'VCC1' || A.Pad_Number == 'VCC2' || A.Pad_Number == 'LIGHT' || A.Pad_Number == 'MODE' || A.Pad_Number == 'ALARM' || A.Pad_Number == 'BUZZER') && B.Type == 'Zone'")
+  (constraint clearance (min 0.3mm)))

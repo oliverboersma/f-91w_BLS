@@ -1,0 +1,8 @@
+CASIO-F91W-OUTLINE-USB, FH19C9S05SH10, ELT3KN, LED_QBLP655_RGB, FH19C9S05SH10-FFC and
+LGA12R50P4X4_200X200X70 are copied unmodified from the Sensor Watch project by Joey Castillo
+(https://github.com/joeycastillo/Sensor-Watch), licensed CC-BY-SA 4.0. Boards using them are
+derivative works and must be shared under CC-BY-SA 4.0 with attribution.
+CASIO-F91W-OUTLINE-BLE is CASIO-F91W-OUTLINE-USB with the five USB tongue pads removed (same licence).
+ST_MLPF-WB-01E3_CSP-6 was generated from the MLPF-WB-01E3 datasheet text and MUST be checked
+against ST's recommended land pattern before fabrication.
+MAXM86161 (OLGA-14) has NO footprint yet: draw it from ADI land pattern 90-100106.

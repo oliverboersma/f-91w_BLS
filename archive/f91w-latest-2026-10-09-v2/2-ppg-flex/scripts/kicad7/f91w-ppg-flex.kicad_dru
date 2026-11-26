@@ -1,0 +1,11 @@
+(version 1)
+# KiCad 7 version of the flex rules. KiCad 7 has no memberOfFootprint(), so the
+# 0.20 mm board-setup edge clearance covers the FFC fingers (pads), and these rules
+# hold pours, tracks and vias to JLC's 0.3 mm laser-cut minimum. Other pads are
+# checked at 0.3 mm in the gerber review (they all sit well inside).
+(rule "pours 0.3 mm from the laser-cut edge"
+  (condition "A.Type == 'Zone'")
+  (constraint edge_clearance (min 0.3mm)))
+(rule "tracks and vias 0.3 mm from the laser-cut edge"
+  (condition "A.Type == 'Track' || A.Type == 'Via'")
+  (constraint edge_clearance (min 0.3mm)))

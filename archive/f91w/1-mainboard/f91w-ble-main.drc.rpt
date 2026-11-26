@@ -1,0 +1,14 @@
+** Drc report for kicad/f91w-ble-main.kicad_pcb (rev A1) **
+** Created on 2026-10-09 06:37:11 **
+
+** Found 1 DRC violations **
+[copper_edge_clearance]: Board edge clearance violation (board setup constraints edge clearance 0.2000 mm; actual 0.0000 mm)
+    Rule: board setup constraints edge; Severity: error
+    @(-6.3626 mm, 11.4334 mm): Line on Edge.Cuts
+    @(-6.0452 mm, 11.1760 mm): PTH pad BUZZER [/BUZZER_HV] of M1
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **
